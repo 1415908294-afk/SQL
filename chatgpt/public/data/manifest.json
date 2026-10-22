@@ -1,0 +1,16 @@
+{
+  "label": "Voca Demo 全部为模拟数据，不来自任何真实产品后台",
+  "version": 1,
+  "dateRange": [
+    "2027-01-01",
+    "2027-02-04"
+  ],
+  "counts": {
+    "users": 120,
+    "signup_events": 120,
+    "ai_conversations": 528,
+    "channels": 4,
+    "orders": 40,
+    "activity_events": 678
+  }
+}

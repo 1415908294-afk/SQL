@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env*
+!.env.example
+*.log
+output/
+public/duckdb/
+*.tsbuildinfo
+public/data/*.duckdb

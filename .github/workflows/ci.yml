@@ -1,0 +1,24 @@
+name: Verify SQL Growth Lab
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: chatgpt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: chatgpt/package-lock.json
+      - run: npm ci
+      - run: npm run verify
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sql-growth-lab-dist
+          path: chatgpt/dist
