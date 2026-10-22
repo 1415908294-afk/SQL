@@ -34,7 +34,7 @@ npm run dev:full
 
 `POST /api/tutor` 支持 hint/error/explain/review，包含来源检查、请求体限制、每分钟12次限流、18秒上游超时、参数校验、上游错误脱敏、完整答案显式开关。标准答案不会放入模型上下文。提示过滤是学习体验保护，不是考试级防作弊。
 
-`npm run build` 后 `npm start` 可由Node同时服务网站和API。Node默认仅监听回环地址；如需公网部署，必须配置反向代理HTTPS、可信身份、ALLOWED_ORIGIN与持久化分布式限流。`functions/api/tutor.js` 提供Cloudflare Pages适配器。当前Sites采用静态部署，本地学习导师可用；在线DeepSeek调用需另行启用服务端代理和密钥。
+`npm run build` 后 `npm start` 可由Node同时服务网站和API。Node默认仅监听回环地址；如需公网部署，必须配置反向代理HTTPS、可信身份、ALLOWED_ORIGIN与持久化分布式限流。`functions/api/tutor.js` 提供Cloudflare Pages适配器。当前Sites已增加同源Cloudflare Worker后端代理，线上密钥通过平台Secret配置；浏览器仅请求 /api/tutor，不接触密钥。
 
 ## 验证与构建
 
@@ -55,6 +55,6 @@ GitHub目标：https://github.com/1415908294-afk/SQL ，项目放在chatgpt/。
 
 安装时从锁定依赖复制Wasm与Worker，生成模拟数据库，因此源码仓库不包含巨大的引擎二进制或数据库。标准结果JSON纳入版本管理。修改题目/生成规则后运行 `npm run data`、`npm run verify`、`npm run build`。
 
-静态托管命令：`npm ci && npm run build`，发布dist，部署在域名根路径。生产Wasm采用约7–8MB gzip资产，浏览器DecompressionStream解压后执行；需要支持该API的现代浏览器。单线程Worker不需要COOP/COEP。浏览器首次加载编辑器和引擎后可本地执行查询，页面刷新仍需站点资源。
+构建命令：`npm ci && npm run build`，部署Worker及dist/client资源，部署在域名根路径；仅前端托管时发布dist/client。构建产物分为 dist/client 静态资源与 dist/server/index.js Worker入口；平台为Worker提供 ASSETS 绑定。生产Wasm采用约7–8MB gzip资产，浏览器DecompressionStream解压后执行；需要支持该API的现代浏览器。单线程Worker不需要COOP/COEP。浏览器首次加载编辑器和引擎后可本地执行查询，页面刷新仍需站点资源。
 
 GitHub CI放在仓库根目录 `.github/workflows/ci.yml`，以chatgpt为工作目录。网站学习记录只在浏览器本地，不包含账号同步；标准答案在前端可见，适合自学。

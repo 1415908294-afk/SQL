@@ -1,12 +1,14 @@
 import http from 'node:http';
 import {readFile,stat} from 'node:fs/promises';
 import path from 'node:path';
+import {existsSync} from 'node:fs';
 import {handleTutor} from './tutor.mjs';
-const root=path.resolve('dist');
+const root=path.resolve(existsSync('dist/client/index.html')?'dist/client':'dist');
 const mime={'.html':'text/html;charset=utf-8','.js':'text/javascript','.css':'text/css','.json':'application/json','.wasm':'application/wasm','.gz':'application/gzip','.duckdb':'application/octet-stream','.svg':'image/svg+xml','.ttf':'font/ttf'};
 const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://127.0.0.1:8787');
+  if(url.pathname==='/api/health'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({service:'sql-growth-lab',tutorConfigured:!!process.env.DEEPSEEK_API_KEY}));return;}
   if(url.pathname==='/api/tutor'){
    const chunks=[];let length=0;for await(const chunk of req){length+=chunk.length;if(length>30000){res.writeHead(413);res.end('请求过大');return;}chunks.push(chunk);}
    const request=new Request(url,{method:req.method,headers:req.headers,...(req.method==='POST'?{body:Buffer.concat(chunks)}:{})});
